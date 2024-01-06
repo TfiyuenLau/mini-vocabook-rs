@@ -9,8 +9,8 @@ edition = "2021"
 [dependencies]
 api = { path = "./api"}
 dotenvy = "0.15"
-tracing = { wordspace = true }
-tracing-subscriber = { wordspace = true }
+tracing = "0.1"
+tracing-subscriber = "0.3"
 
 [workspace]
 members = ["service", "api", "common"]

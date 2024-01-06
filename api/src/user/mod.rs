@@ -1,20 +1,24 @@
 use std::collections::HashMap;
+use std::sync::Arc;
 use axum::extract::Query;
 use axum::extract::rejection::{JsonRejection, QueryRejection};
-use axum::Json;
+use axum::{Extension, Json};
 use serde_json::Value;
-use common::db::get_db_conn;
 use common::dto::user_dto::{UserLoginDto};
 use common::entity::user;
 use common::res::ResJson;
 use service::user_service::{get_user_by_id, insert_user, login};
+use crate::AppState;
 
 // 用户登录处理器
-pub async fn login_handler(user_login_dto: Result<Query<UserLoginDto>, QueryRejection>) -> ResJson<user::Model> {
+pub async fn login_handler(
+    Extension(state): Extension<Arc<AppState>>,
+    user_login_dto: Result<Query<UserLoginDto>, QueryRejection>,
+) -> ResJson<user::Model> {
     match user_login_dto {
         Ok(user_login_dto) => {
-            let conn = get_db_conn().await;
-            match login(conn, user_login_dto.0).await {
+            let conn = &state.db_conn;
+            match login(conn.to_owned(), user_login_dto.0).await {
                 Some(user) => {
                     ResJson::success(user)
                 }
@@ -30,12 +34,15 @@ pub async fn login_handler(user_login_dto: Result<Query<UserLoginDto>, QueryReje
     }
 }
 
-// 获取用户信息处理器
-pub async fn get_user_by_id_handler(user_id: Result<Query<HashMap<String, u64>>, QueryRejection>) -> ResJson<user::Model> {
+// 用户个人信息处理器
+pub async fn get_user_by_id_handler(
+    Extension(state): Extension<Arc<AppState>>,
+    user_id: Result<Query<HashMap<String, u64>>, QueryRejection>,
+) -> ResJson<user::Model> {
     match user_id {
         Ok(user_id) => {
-            let conn = get_db_conn().await;
-            match get_user_by_id(conn, *user_id.0.get("user_id").unwrap()).await {
+            let conn = &state.db_conn;
+            match get_user_by_id(conn.to_owned(), *user_id.0.get("user_id").unwrap()).await {
                 Some(user) => {
                     ResJson::success(user)
                 }
@@ -52,11 +59,14 @@ pub async fn get_user_by_id_handler(user_id: Result<Query<HashMap<String, u64>>,
 }
 
 // 用户注册处理器
-pub async fn register_handler(user_json: Result<Json<Value>, JsonRejection>) -> ResJson<user::Model> {
+pub async fn register_handler(
+    Extension(state): Extension<Arc<AppState>>,
+    user_json: Result<Json<Value>, JsonRejection>,
+) -> ResJson<user::Model> {
     match user_json {
         Ok(user_json) => {
-            let conn = get_db_conn().await;
-            let res = insert_user(conn, user_json.0).await;
+            let conn = &state.db_conn;
+            let res = insert_user(conn.to_owned(), user_json.0).await;
 
             ResJson::success(res)
         }

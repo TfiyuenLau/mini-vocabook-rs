@@ -15,12 +15,12 @@ pub async fn start() {
     let addr = env::var("SERVER_ADDR").expect("SERVER_ADDR is not in .env file.");
 
     // app state configuration
-    let state = AppState {
+    let state = Arc::new(AppState {
         db_conn: get_db_conn().await
-    };
+    });
 
     // start axum serve:http://localhost:3030/api/
-    let app = init().layer(Extension(Arc::new(state)));
+    let app = init().layer(Extension(state));
     let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
     axum::serve(listener, app).await.unwrap();
 }
