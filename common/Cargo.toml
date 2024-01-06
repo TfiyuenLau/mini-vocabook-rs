@@ -1,0 +1,17 @@
+[package]
+name = "common"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "common"
+path = "src/lib.rs"
+
+[dependencies]
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+axum = { workspace = true }
+sea-orm = { workspace = true }
+log = { workspace = true }
+dotenvy = { workspace = true }
+rust-crypto = { workspace = true }
