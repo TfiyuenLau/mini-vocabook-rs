@@ -6,10 +6,11 @@ use axum::extract::Query;
 use axum::extract::rejection::{JsonRejection, QueryRejection};
 use axum::{Extension, Json};
 use serde_json::Value;
-use common::dto::user_dto::{UserLoginDto};
+use common::dto::user_dto::{UserLoginDto, UserRegisterDto};
 use common::entity::user;
+use common::entity::user::Model;
 use common::res::ResJson;
-use service::user_service::{get_user_by_id, insert_user, login};
+use service::user_service::{get_user_by_id, insert_user, login, update_user};
 use crate::AppState;
 
 // 用户登录处理器
@@ -71,6 +72,31 @@ pub async fn register_handler(
             let res = insert_user(conn.to_owned(), user_json.0).await;
 
             ResJson::success(res)
+        }
+        Err(err) => {
+            eprintln!("json error {:?}", err);
+            ResJson::error(err.to_string())
+        }
+    }
+}
+
+// 用户注册处理器
+pub async fn update_user_handler(
+    Extension(state): Extension<Arc<AppState>>,
+    user_json: Result<Json<Value>, JsonRejection>,
+) -> ResJson<Model> {
+    match user_json {
+        Ok(user_json) => {
+            let conn = &state.db_conn;
+            let dto: UserRegisterDto = serde_json::from_value(user_json.0).unwrap();
+            match update_user(conn.to_owned(), dto).await {
+                Some(res) => {
+                    ResJson::success(res)
+                }
+                None => {
+                    ResJson::error("".to_string())
+                }
+            }
         }
         Err(err) => {
             eprintln!("json error {:?}", err);

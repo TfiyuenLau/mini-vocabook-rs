@@ -1,4 +1,5 @@
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTrait, QueryFilter};
+use sea_orm::ActiveValue::Set;
 use serde_json::{json, Value};
 use common::dto::user_dto::{UserLoginDto, UserRegisterDto};
 use common::encrypt_password;
@@ -59,4 +60,28 @@ pub async fn insert_user(db: DatabaseConnection, mut user_json: Value) -> user::
         });
 
     result.unwrap()
+}
+
+// 更新用户信息
+pub async fn update_user(db: DatabaseConnection, mut user_dto: UserRegisterDto) -> Option<Model> {
+    user_dto.password = encrypt_password(user_dto.password);
+    let model = User::find()
+        .filter(user::Column::Email.eq(user_dto.email.to_owned()))
+        .filter(user::Column::PwHash.eq(user_dto.password.to_owned()))
+        .one(&db).await.unwrap();
+
+    match model {
+        Some(model) => {
+            let mut user_update: user::ActiveModel = model.into();
+            user_update.email = Set(user_dto.email.to_owned());
+            user_update.username = Set(user_dto.username.to_owned());
+            user_update.pw_hash = Set(user_dto.password.to_owned());
+            user_update.wordbook_id = Set(user_dto.wordbook_id.to_owned());
+
+            user_update.update(&db).await.ok()
+        }
+        None => {
+            None
+        }
+    }
 }

@@ -1,7 +1,7 @@
 use axum::Router;
 use axum::routing::{get, post};
 use crate::record::insert_or_update_record_handler;
-use crate::user::{get_user_by_id_handler, login_handler, register_handler};
+use crate::user::{get_user_by_id_handler, login_handler, register_handler, update_user_handler};
 use crate::word::{all_word_handler, get_learning_word_handler, get_review_word_handler, get_word_by_id_handler};
 use crate::wordbook::{wordbook_by_id_handler, wordbook_progress_handler, wordbook_word_count_handler, words_by_wordbook_id_handler};
 
@@ -34,6 +34,7 @@ pub fn get_user_routes() -> Router {
         .route("/login", get(login_handler))
         .route("/get_user_by_id", get(get_user_by_id_handler))
         .route("/register", post(register_handler))
+        .route("/update_user", post(update_user_handler))
 }
 
 /// 单词二级路由
