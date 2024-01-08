@@ -20,14 +20,19 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.tfiyuenlau.mini-vocabook",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
         "icons/128x128@2x.png",
         "icons/icon.icns",
         "icons/icon.ico"
-      ]
+      ],
+      "windows": {
+        "wix": {
+          "language": "zh-CN"
+        }
+      }
     },
     "security": {
       "csp": null

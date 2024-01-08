@@ -14,16 +14,16 @@ const authStore = useAuthStore();
 
 const registerDialog = ref(false);
 
-const loginFrom = reactive<UserLogin>({
+const loginForm = reactive<UserLogin>({
   email: "", password: "",
 });
 
-const registerFrom = reactive<UserRegister>({
-  email: "", password: "", username: "", wordbook_id: 1
+const registerForm = reactive<UserRegister>({
+  email: "", password: "", username: "", wordbookId: 1
 });
 
 const handleLogin = () => {
-  loginUser(loginFrom).then((res: ApiResult<User>) => {
+  loginUser(loginForm).then((res: ApiResult<User>) => {
     if (res.status == 200) {
       toast.success(`登陆成功，${res.data.username} 欢迎！`);
 
@@ -36,7 +36,7 @@ const handleLogin = () => {
 };
 
 const handleRegister = () => {
-  registerUser(registerFrom).then(res => {
+  registerUser(registerForm).then(res => {
     if (res.status == 200) {
       toast.success("账户注册成功");
       registerDialog.value = false;
@@ -58,14 +58,14 @@ const handleRegister = () => {
           <v-card-text>
             <v-form class="ml-4 mr-4">
               <v-text-field
-                  v-model="loginFrom.email"
+                  v-model="loginForm.email"
                   label="Email"
                   :prepend-icon="mdiEmail"
                   outlined
               >
               </v-text-field>
               <v-text-field
-                  v-model="loginFrom.password"
+                  v-model="loginForm.password"
                   label="Password"
                   type="password"
                   :prepend-icon="mdiLock"
@@ -101,14 +101,14 @@ const handleRegister = () => {
               <v-card-text>
                 <v-form class="ml-4 mr-4">
                   <v-text-field
-                      v-model="registerFrom.email"
+                      v-model="registerForm.email"
                       label="Email"
                       :prepend-icon="mdiEmail"
                       outlined
                   >
                   </v-text-field>
                   <v-text-field
-                      v-model="registerFrom.username"
+                      v-model="registerForm.username"
                       label="Username"
                       type="Username"
                       :prepend-icon="mdiAccount"
@@ -116,14 +116,14 @@ const handleRegister = () => {
                   >
                   </v-text-field>
                   <v-text-field
-                      v-model="registerFrom.password"
+                      v-model="registerForm.password"
                       label="Password"
                       type="password"
                       :prepend-icon="mdiLock"
                       outlined
                   >
                   </v-text-field>
-                  <v-radio-group v-model="registerFrom.wordbook_id" inline>
+                  <v-radio-group v-model="registerForm.wordbookId" inline>
                     <v-row justify="start">
                       <v-col :cols="4">
                         <div class="text-center text-subtitle-2">四级核心词汇本</div>

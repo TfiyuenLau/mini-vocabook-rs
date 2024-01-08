@@ -62,7 +62,7 @@ onMounted(() => {
       <v-list-item :prepend-icon="mdiAlphaABox" title="单词测试" value="quiz" @click="openView('quiz')"></v-list-item>
       <v-list-item :prepend-icon="mdiChartBar" title="学习统计" value="statistics"
                    @click="openView('statistics')"></v-list-item>
-      <v-list-item :prepend-icon="mdiAccount" title="用户设置" value="my" @click="openView('my')"></v-list-item>
+      <v-list-item :prepend-icon="mdiAccount" title="用户设置" value="user" @click="openView('user')"></v-list-item>
     </v-list>
   </v-navigation-drawer>
 

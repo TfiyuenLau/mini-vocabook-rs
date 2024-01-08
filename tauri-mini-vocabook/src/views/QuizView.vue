@@ -5,7 +5,7 @@ import {mdiMessageText} from "@mdi/js";
 
 <template>
   <v-container>
-    <v-card image="https://cdn.vuetifyjs.com/images/parallax/material.jpg">
+    <v-card image="/image/material.jpg">
       <v-row justify="center" class="mt-8 mb-8">
         <v-alert
             class="ml-12 mr-12"

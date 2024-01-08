@@ -17,5 +17,5 @@ export interface UserRegister {
     email: string;
     username: string;
     password: string;
-    wordbook_id: number;
+    wordbookId: number;
 }

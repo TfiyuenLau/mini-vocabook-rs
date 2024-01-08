@@ -14,6 +14,12 @@ dependencies:
   axios:
     specifier: ^1.4.0
     version: registry.npmmirror.com/axios@1.4.0
+  echarts:
+    specifier: ^5.4.3
+    version: registry.npmmirror.com/echarts@5.4.3
+  echarts-wordcloud:
+    specifier: '2'
+    version: registry.npmmirror.com/echarts-wordcloud@2.1.0(echarts@5.4.3)
   pinia:
     specifier: ^2.1.3
     version: registry.npmmirror.com/pinia@2.1.3(typescript@5.0.2)(vue@3.3.4)
@@ -956,6 +962,26 @@ packages:
     engines: {node: '>=0.4.0'}
     dev: false
 
+  registry.npmmirror.com/echarts-wordcloud@2.1.0(echarts@5.4.3):
+    resolution: {integrity: sha512-Kt1JmbcROgb+3IMI48KZECK2AP5lG6bSsOEs+AsuwaWJxQom31RTNd6NFYI01E/YaI1PFZeueaupjlmzSQasjQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/echarts-wordcloud/-/echarts-wordcloud-2.1.0.tgz}
+    id: registry.npmmirror.com/echarts-wordcloud/2.1.0
+    name: echarts-wordcloud
+    version: 2.1.0
+    peerDependencies:
+      echarts: ^5.0.1
+    dependencies:
+      echarts: registry.npmmirror.com/echarts@5.4.3
+    dev: false
+
+  registry.npmmirror.com/echarts@5.4.3:
+    resolution: {integrity: sha512-mYKxLxhzy6zyTi/FaEbJMOZU1ULGEQHaeIeuMR5L+JnJTpz+YR03mnnpBhbR4+UYJAgiXgpyTVLffPAjOTLkZA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/echarts/-/echarts-5.4.3.tgz}
+    name: echarts
+    version: 5.4.3
+    dependencies:
+      tslib: registry.npmmirror.com/tslib@2.3.0
+      zrender: registry.npmmirror.com/zrender@5.4.4
+    dev: false
+
   registry.npmmirror.com/entities@4.5.0:
     resolution: {integrity: sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/entities/-/entities-4.5.0.tgz}
     name: entities
@@ -1203,6 +1229,12 @@ packages:
     version: 2.0.0
     engines: {node: '>=4'}
 
+  registry.npmmirror.com/tslib@2.3.0:
+    resolution: {integrity: sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/tslib/-/tslib-2.3.0.tgz}
+    name: tslib
+    version: 2.3.0
+    dev: false
+
   registry.npmmirror.com/typescript@5.0.2:
     resolution: {integrity: sha512-wVORMBGO/FAs/++blGNeAVdbNKtIh1rbBL2EyQ1+J9lClJ93KiiKe8PmFIVdXhHcyv44SL9oglmfeSsndo0jRw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/typescript/-/typescript-5.0.2.tgz}
     name: typescript
@@ -1382,3 +1414,11 @@ packages:
     name: yallist
     version: 4.0.0
     dev: true
+
+  registry.npmmirror.com/zrender@5.4.4:
+    resolution: {integrity: sha512-0VxCNJ7AGOMCWeHVyTrGzUgrK4asT4ml9PEkeGirAkKNYXYzoPJCLvmyfdoOXcjTHPs10OZVMfD1Rwg16AZyYw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/zrender/-/zrender-5.4.4.tgz}
+    name: zrender
+    version: 5.4.4
+    dependencies:
+      tslib: registry.npmmirror.com/tslib@2.3.0
+    dev: false
