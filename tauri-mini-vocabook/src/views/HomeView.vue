@@ -1,40 +1,37 @@
 <script setup lang="ts">
-import {computed, onMounted, reactive, ref, watchEffect} from 'vue'
-import {
-  mdiAccount,
-  mdiArrowRightBoldCircleOutline,
-  mdiClose,
-  mdiEmail,
-  mdiLock,
-  mdiLogin,
-  mdiRegisteredTrademark
-} from "@mdi/js";
+import {computed, onMounted, ref, watchEffect} from 'vue'
+import {mdiArrowRightBoldCircleOutline, mdiClose, mdiListStatus} from "@mdi/js";
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
 import {Store} from "tauri-plugin-store-api";
-import {UserLogin, UserRegister} from "../model/user.ts";
-import {loginUser, registerUser} from "../api/user.ts";
 import {useToast} from 'vue-toastification';
 import {useAuthStore} from "../store/auth.ts";
-import {useRouter} from "vue-router";
+import {Word} from "../model/word.ts";
+import {getWordById} from "../api/word.ts";
+import {Wordbook} from "../model/wordbook.ts";
+import {ApiResult} from "../model/res.ts";
+import {getWordbookById, getWordbookProgress, getWordbookWordCount, getWordsByWordbookId} from "../api/wordbook.ts";
+import LoginRegisterFrom from "../components/LoginRegisterFrom.vue";
 
 const toast = useToast();
-const router = useRouter();
 const authStore = useAuthStore();
 const store = new Store(".settings.dat");
 
 const loginDialog = ref(false);
-const registerDialog = ref(false);
 const timeDialog = ref(false);
 const selectedDate = ref();
+const wordlistDialog = ref(false);
 
-const loginFrom = reactive<UserLogin>({
-  email: "", password: "",
-});
-
-const registerFrom = reactive<UserRegister>({
-  email: "", password: "", username: "", wordbook_id: 1
-});
+const recommendWord = ref<Word>();
+const wordbook = ref<Wordbook>();
+const wordbookCount = ref()
+const wordbookProgress = ref()
+const wordlist = ref<Array<Word>>();
+const listHeaders = ref([
+  {title: '单词', key: 'word'},
+  {title: '音标', key: 'phonogram'},
+  {title: '释义', key: 'definition'},
+]);
 
 // 计算剩余天数
 const daysDiff = computed(() => {
@@ -42,29 +39,14 @@ const daysDiff = computed(() => {
   return Math.floor(daysDiff);
 });
 
-const handleLogin = () => {
-  loginUser(loginFrom).then(res => {
+const handleWordlist = () => {
+  getWordsByWordbookId(authStore.user!.wordbookId, 0).then((res: ApiResult<Array<Word>>) => {
     if (res.status == 200) {
-      toast.success(`登陆成功，${res.data.username} 欢迎！`);
-
-      authStore.login(res.data);
-      router.go(0);
-    } else {
-      toast.error("登陆失败，账号或密码错误");
+      wordlist.value = [...res.data];
+      wordlistDialog.value = true;
     }
   });
-};
-
-const handleRegister = () => {
-  registerUser(registerFrom).then(res => {
-    if (res.status == 200) {
-      toast.success("账户注册成功");
-      registerDialog.value = false;
-    } else {
-      toast.success("注册失败，请填写完整后重试");
-    }
-  });
-};
+}
 
 // 通过监听store控制登录对话框显示
 watchEffect(() => {
@@ -72,6 +54,28 @@ watchEffect(() => {
 });
 
 onMounted(() => {
+  // 获取推荐单词
+  getWordById(Math.floor(Math.random() * 1000)).then(res => {
+    recommendWord.value = {...res.data};
+  })
+
+  // 获取登录用户的目标单词本
+  if (authStore.isLoggedIn && authStore.user) {
+    getWordbookById(authStore.user.wordbookId).then((res: ApiResult<Wordbook>) => {
+      if (res.status == 200) {
+        wordbook.value = {...res.data};
+
+        // 获取单词本学习进度信息
+        getWordbookWordCount(wordbook.value?.wordbookId as number).then(res => {
+          wordbookCount.value = res.data;
+        })
+        getWordbookProgress(authStore.user?.userId as number, wordbook.value?.wordbookId as number).then(res => {
+          wordbookProgress.value = res.data;
+        })
+      }
+    });
+  }
+
   // 获取初始化的目标日期
   store.get("targetDate").then((res: any) => {
     if (res == null) {
@@ -94,29 +98,34 @@ const setTargetDate = async (date: Date) => {
 <template>
   <v-container>
     <!-- Home主页面 -->
-    <v-card image="https://images.pexels.com/photos/45204/alm-friuli-snow-snowfall-45204.jpeg">
+    <v-card image="/image/alm-friuli-snow-snowfall-45204.jpeg">
       <v-row justify="start" class="mt-4">
         <v-col :cols="5" offset="1">
           <v-card
               class="mx-auto"
               height="192"
-              image="https://picsum.photos/500/300?image=232"
-              title="今日单词"
+              image="/image/pexels-ejov-igor-10456550.jpg"
+              title="今日新词"
               theme="dark"
           >
-            <v-row justify="center" class="mt-2" style="font-family: 'Times New Roman',宋体,serif">
-              <div class="text-h3 text-white">Language</div>
-              <div class="text-center text-white ml-4 mr-4">
-                n. 语言;言语;语言文字;说话;计算机语言;表达方式，交际方式;
-              </div>
-            </v-row>
+            <div v-if="recommendWord">
+              <v-row justify="center" class="mt-2" style="font-family: 'Times New Roman',宋体,serif">
+                <div class="text-h3 text-white">{{ recommendWord.word }}</div>
+              </v-row>
+              <v-row justify="center" class="mt-2" style="font-family: 'Times New Roman',宋体,serif">
+                <div class="text-center text-white ml-4 mr-4">{{ recommendWord.phonogram }}</div>
+              </v-row>
+              <v-row justify="center" class="mt-2" style="font-family: 'Times New Roman',宋体,serif">
+                <div class="text-center text-white ml-4 mr-4">{{ recommendWord.definition }}</div>
+              </v-row>
+            </div>
           </v-card>
         </v-col>
         <v-col :cols="5">
           <v-card
               class="mx-auto"
               height="192"
-              image="https://cdn.vuetifyjs.com/images/cards/road.jpg"
+              image="/image/pexels-leeloo-thefirst-5386829.jpg"
               title="Target"
               theme="dark"
           >
@@ -170,14 +179,24 @@ const setTargetDate = async (date: Date) => {
           </v-card>
         </v-col>
       </v-row>
+
       <v-row justify="start">
         <v-col :cols="10" :offset="1">
-          <v-card class="mx-auto bg-deep-purple" :title="'四六级考试词汇本（精简）'">
+          <v-card class="mx-auto bg-deep-purple">
+            <v-card-title>
+              <v-row>
+                <v-col :cols="10">{{ wordbook?.bookName }}</v-col>
+                <v-col :cols="2">
+                  <v-btn :prepend-icon="mdiListStatus" variant="outlined" rounded="lg" class="bg-white"
+                         @click="handleWordlist">词表
+                  </v-btn>
+                </v-col>
+              </v-row>
+            </v-card-title>
             <v-card-item>
               <v-container>
                 <v-row justify="center" class="mt-4">
-                  <v-progress-linear :model-value="42">
-                  </v-progress-linear>
+                  <v-progress-linear :model-value="wordbookProgress / wordbookCount"></v-progress-linear>
                 </v-row>
                 <v-row justify="end" class="mt-4">
 
@@ -186,14 +205,14 @@ const setTargetDate = async (date: Date) => {
             </v-card-item>
             <v-card-actions>
               <v-row justify="end">
-                <v-btn variant="outlined" class="bg-white mr-4">455 / 2254</v-btn>
+                <v-btn variant="outlined" class="bg-white mr-4">{{ wordbookProgress }} / {{ wordbookCount }}</v-btn>
               </v-row>
             </v-card-actions>
           </v-card>
         </v-col>
       </v-row>
       <v-row justify="center">
-        <v-btn size="x-large">
+        <v-btn size="x-large" @click="$router.push({ path: '/learning' })">
           <template v-slot:prepend>
             <v-icon :icon="mdiArrowRightBoldCircleOutline"></v-icon>
           </template>
@@ -209,120 +228,18 @@ const setTargetDate = async (date: Date) => {
         width="100%"
         persistent
     >
-      <v-container fill-height fluid>
-        <v-row align="center" justify="center">
-          <v-col cols="12" sm="8" md="4">
-            <v-card image="https://images.pexels.com/photos/925743/pexels-photo-925743.jpeg">
-              <v-card-title class="headline text-center mt-4">用户登录</v-card-title>
-
-              <v-card-text>
-                <v-form class="ml-4 mr-4">
-                  <v-text-field
-                      v-model="loginFrom.email"
-                      label="Email"
-                      :prepend-icon="mdiEmail"
-                      outlined
-                  >
-                  </v-text-field>
-                  <v-text-field
-                      v-model="loginFrom.password"
-                      label="Password"
-                      type="password"
-                      :prepend-icon="mdiLock"
-                      outlined
-                  >
-                  </v-text-field>
-
-                  <v-btn variant="outlined" class="mt-4" color="orange" :prepend-icon="mdiRegisteredTrademark"
-                         @click="loginDialog = false;registerDialog = true;" block>
-                    Register
-                  </v-btn>
-                  <v-btn class="mt-4" color="indigo" :prepend-icon="mdiLogin" @click="handleLogin" block>
-                    Login
-                  </v-btn>
-                </v-form>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
+      <login-register-from></login-register-from>
     </v-dialog>
 
-    <!-- 注册弹出框 -->
+    <!-- 词表弹出框 -->
     <v-dialog
-        v-model="registerDialog"
-        width="90%"
-        persistent
+        v-model="wordlistDialog"
+        width="100%"
+        scrollable
     >
-      <v-container fill-height fluid>
-        <v-row align="center" justify="center">
-          <v-col cols="12" sm="8" md="4">
-            <v-card image="">
-              <v-card-title class="headline text-center mt-4">用户注册</v-card-title>
-
-              <v-card-text>
-                <v-form class="ml-4 mr-4">
-                  <v-text-field
-                      v-model="registerFrom.email"
-                      label="Email"
-                      :prepend-icon="mdiEmail"
-                      outlined
-                  >
-                  </v-text-field>
-                  <v-text-field
-                      v-model="registerFrom.username"
-                      label="Username"
-                      type="Username"
-                      :prepend-icon="mdiAccount"
-                      outlined
-                  >
-                  </v-text-field>
-                  <v-text-field
-                      v-model="registerFrom.password"
-                      label="Password"
-                      type="password"
-                      :prepend-icon="mdiLock"
-                      outlined
-                  >
-                  </v-text-field>
-                  <v-radio-group v-model="registerFrom.wordbook_id" inline>
-                    <v-row justify="start">
-                      <v-col :cols="4">
-                        <div class="text-center text-subtitle-2">四级核心词汇本</div>
-                        <v-card image="/image/满足.png" color="yellow" height="110" hover>
-                          <v-radio label="" color="red" :value="1"></v-radio>
-                        </v-card>
-                      </v-col>
-                      <v-col :cols="4">
-                        <div class="text-center text-subtitle-2">六级核心词汇本</div>
-                        <v-card image="/image/开心.png" color="orange" height="110" hover>
-                          <v-radio label="" color="pink" :value="2"></v-radio>
-                        </v-card>
-                      </v-col>
-                      <v-col :cols="4">
-                        <div class="text-center text-subtitle-2">考研精选词汇本</div>
-                        <v-card image="/image/欢快.png" color="green" height="110" hover>
-                          <v-radio label="" color="yellow" :value="3"></v-radio>
-                        </v-card>
-                      </v-col>
-                    </v-row>
-                  </v-radio-group>
-
-                  <v-row justify="end" class="mt-4 mb-4">
-                    <v-btn variant="outlined" class="mr-2" color="indigo" :prepend-icon="mdiLogin"
-                           @click="registerDialog = false;loginDialog = true;">
-                      close
-                    </v-btn>
-                    <v-btn class="ml-2" color="orange" :prepend-icon="mdiRegisteredTrademark" @click="handleRegister">
-                      Register
-                    </v-btn>
-                  </v-row>
-                </v-form>
-              </v-card-text>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-card :title="wordbook?.bookName" v-if="wordlist">
+        <v-data-table :headers="listHeaders" :items="wordlist"></v-data-table>
+      </v-card>
     </v-dialog>
   </v-container>
 </template>

@@ -1,11 +1,11 @@
 export interface User {
-    createTime: string;
     email: string;
-    isEffective: number;
     pwHash: string;
     userId: number;
     username: string;
     wordbookId: number;
+    createTime: string;
+    isEffective: number;
 }
 
 export interface UserLogin {

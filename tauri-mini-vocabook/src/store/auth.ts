@@ -9,7 +9,7 @@ export const useAuthStore = defineStore("auth", {
     }),
     actions: {
         login(userInfo: User) {
-            this.user = userInfo;
+            this.user = {...userInfo};
             this.isLoggedIn = true;
         },
         logout() {
