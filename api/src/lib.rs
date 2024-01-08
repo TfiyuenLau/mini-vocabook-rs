@@ -8,6 +8,8 @@ use crate::routes::init;
 mod routes;
 mod user;
 mod word;
+mod wordbook;
+mod record;
 
 #[tokio::main]
 pub async fn start() {

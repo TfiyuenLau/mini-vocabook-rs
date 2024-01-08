@@ -4,6 +4,7 @@ use crate::entity::user;
 
 // 用户登录请求DTO
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct UserLoginDto {
     pub email: String,
     pub password: String,
@@ -11,6 +12,7 @@ pub struct UserLoginDto {
 
 // 用户注册请求DTO
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 pub struct UserRegisterDto {
     pub email: String,
     pub username: String,

@@ -32,10 +32,9 @@ pub async fn get_user_by_id(db: DatabaseConnection, user_id: u64) -> Option<Mode
         .map_err(|e| {
             eprintln!("Error fetching words: {:?}", e);
             DbErr::RecordNotFound(e.to_string())
-        })
-        .unwrap();
+        });
 
-    result
+    result.unwrap()
 }
 
 // 新增一个用户

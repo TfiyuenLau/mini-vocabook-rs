@@ -1,3 +1,5 @@
+mod test;
+
 use std::collections::HashMap;
 use std::sync::Arc;
 use axum::extract::Query;

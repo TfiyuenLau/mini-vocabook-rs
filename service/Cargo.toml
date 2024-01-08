@@ -16,3 +16,4 @@ serde = { workspace = true }
 serde_json = { workspace = true }
 axum = { workspace = true }
 sea-orm = { workspace = true }
+paginate = { workspace = true }
