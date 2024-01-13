@@ -6,7 +6,7 @@ use api;
 fn main() {
     // SeaORM debug log
     tracing_subscriber::fmt()
-        .with_max_level(Level::ERROR)
+        .with_max_level(Level::DEBUG)
         .with_test_writer()
         .init();
 

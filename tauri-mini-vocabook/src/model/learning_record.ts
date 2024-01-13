@@ -3,7 +3,8 @@ export interface LearningRecord {
     userId: number;
     wordId: number;
     masteryLevel: number;
-    learningDt: string;
+    createTime: string;
+    updateTime: string;
     isEffective: number;
 }
 

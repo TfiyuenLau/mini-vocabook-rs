@@ -4,7 +4,7 @@ mod tests {
     use sea_orm::DbErr;
     use common::db::get_db_conn;
     use common::dto::learning_record_dto::UploadRecordDto;
-    use service::record_service::{have_user_word_id_record, insert_learning_record, increase_record_mastery_level};
+    use service::record_service::{have_user_word_id_record, insert_learning_record, increase_record_mastery_level, get_14days_record_statistic};
 
     #[tokio::test]
     async fn test_have_user_word_id_record() -> Result<(), DbErr> {
@@ -49,6 +49,17 @@ mod tests {
             flag: true,
         };
         let model = increase_record_mastery_level(conn, dto).await;
+        println!("{:?}", model);
+
+        Ok(())
+    }
+
+    #[tokio::test]
+    async fn test_get_14days_record_statistic() -> Result<(), DbErr> {
+        dotenv().ok();
+
+        let conn = get_db_conn().await;
+        let model = get_14days_record_statistic(conn, 1).await.unwrap();
         println!("{:?}", model);
 
         Ok(())

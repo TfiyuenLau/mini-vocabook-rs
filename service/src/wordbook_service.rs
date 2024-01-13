@@ -41,8 +41,8 @@ pub async fn get_words_by_wordbook_id(db: DatabaseConnection, wordbook_id: u64, 
 // 获取单词本的单词数量
 pub async fn get_wordbook_word_count(db: DatabaseConnection, wordbook_id: u64) -> Option<Number> {
     let wordbook_count = JsonValue::find_by_statement(Statement::from_sql_and_values(
-            DatabaseBackend::MySql,
-            r#"
+        DatabaseBackend::MySql,
+        r#"
             SELECT
                 COUNT(w.word_id) AS word_count
             FROM
@@ -52,8 +52,8 @@ pub async fn get_wordbook_word_count(db: DatabaseConnection, wordbook_id: u64) -
             WHERE
                 wm.wordbook_id = ?;
             "#,
-            [wordbook_id.into()],
-        ))
+        [wordbook_id.into()],
+    ))
         .one(&db).await
         .map_err(|e| {
             eprintln!("Error fetching words: {:?}", e);
@@ -68,8 +68,8 @@ pub async fn get_wordbook_word_count(db: DatabaseConnection, wordbook_id: u64) -
 // 获取用户的单词本学习进度
 pub async fn get_wordbook_progress(db: DatabaseConnection, user_id: u64, wordbook_id: u64) -> Option<Number> {
     let progress = JsonValue::find_by_statement(Statement::from_sql_and_values(
-            DatabaseBackend::MySql,
-            r#"
+        DatabaseBackend::MySql,
+        r#"
             SELECT
                 COUNT(lr.word_id) AS proficient_word_count
             FROM
@@ -81,8 +81,8 @@ pub async fn get_wordbook_progress(db: DatabaseConnection, user_id: u64, wordboo
                 AND u.wordbook_id = ?
                 AND lr.mastery_level >= 1;
             "#,
-            [user_id.into(), wordbook_id.into()],
-        ))
+        [user_id.into(), wordbook_id.into()],
+    ))
         .one(&db).await
         .map_err(|e| {
             eprintln!("Error fetching words: {:?}", e);
