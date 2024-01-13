@@ -17,7 +17,8 @@ impl Into<ActiveModel> for UploadRecordDto {
             user_id: self.user_id.into_active_value(),
             word_id: self.word_id.into_active_value(),
             mastery_level: Default::default(),
-            learning_dt: Default::default(),
+            create_time: Default::default(),
+            update_time: Default::default(),
             is_effective: Default::default(),
         }
     }

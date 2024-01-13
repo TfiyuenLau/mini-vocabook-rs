@@ -12,7 +12,8 @@ pub struct Model {
     pub user_id: u64,
     pub word_id: u64,
     pub mastery_level: i32,
-    pub learning_dt: DateTime,
+    pub create_time: DateTime,
+    pub update_time: DateTime,
     pub is_effective: i8,
 }
 
