@@ -1,7 +1,7 @@
 use axum::Router;
 use axum::routing::{get, post};
-use crate::record::insert_or_update_record_handler;
-use crate::user::{get_user_by_id_handler, login_handler, register_handler, update_user_handler};
+use crate::record::{date_check_in_statistic_handler, get_14days_record_statistic_handler, insert_or_update_record_handler, mastery_level_statistic_handler, word_cloud_statistic_handler};
+use crate::user::{get_user_by_id_handler, login_handler, register_handler, update_user_handler, update_user_password_handler};
 use crate::word::{all_word_handler, get_learning_word_handler, get_review_word_handler, get_word_by_id_handler};
 use crate::wordbook::{wordbook_by_id_handler, wordbook_progress_handler, wordbook_word_count_handler, words_by_wordbook_id_handler};
 
@@ -34,6 +34,7 @@ pub fn get_user_routes() -> Router {
         .route("/login", get(login_handler))
         .route("/get_user_by_id", get(get_user_by_id_handler))
         .route("/register", post(register_handler))
+        .route("/update_user_password", post(update_user_password_handler))
         .route("/update_user", post(update_user_handler))
 }
 
@@ -58,5 +59,9 @@ pub fn get_wordbook_routes() -> Router {
 /// 学习记录二级路由
 pub fn get_learning_record_routes() -> Router {
     Router::new()
+        .route("/get_14days_record_statistic", get(get_14days_record_statistic_handler))
+        .route("/get_mastery_level_statistic", get(mastery_level_statistic_handler))
+        .route("/get_word_cloud_statistic", get(word_cloud_statistic_handler))
+        .route("/get_date_check_in_statistic", get(date_check_in_statistic_handler))
         .route("/insert_or_update_record", post(insert_or_update_record_handler))
 }

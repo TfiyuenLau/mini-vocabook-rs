@@ -21,8 +21,8 @@ const openView = (value: string) => {
 };
 
 // 用户登出
-const handleLogout = () => {
-  router.push({path: `/`});
+const handleLogout = async () => {
+  await router.push({path: `/`});
   authStore.logout();
   router.go(0); // 跳转后刷新
 }

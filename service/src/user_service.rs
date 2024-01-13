@@ -1,4 +1,4 @@
-use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTrait, QueryFilter};
+use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTrait, IntoActiveModel, QueryFilter};
 use sea_orm::ActiveValue::Set;
 use serde_json::{json, Value};
 use common::dto::user_dto::{UserLoginDto, UserRegisterDto};
@@ -60,6 +60,31 @@ pub async fn insert_user(db: DatabaseConnection, mut user_json: Value) -> user::
         });
 
     result.unwrap()
+}
+
+// 更新用户密码
+pub async fn update_user_password(db: DatabaseConnection, email: String, mut password: String, mut modify_pw: String) -> Option<Model> {
+    // 加密请求密码
+    password = encrypt_password(password);
+    modify_pw = encrypt_password(modify_pw);
+
+    // 查找对应用户
+    let result = User::find()
+        .filter(user::Column::Email.eq(email))
+        .filter(user::Column::PwHash.eq(password))
+        .one(&db)
+        .await.unwrap();
+    match result {
+        Some(user) => {
+            // 修改密码
+            let mut model = user.into_active_model();
+            model.pw_hash = Set(modify_pw.to_owned());
+            model.update(&db).await.ok()
+        }
+        None => {
+            None
+        }
+    }
 }
 
 // 更新用户信息

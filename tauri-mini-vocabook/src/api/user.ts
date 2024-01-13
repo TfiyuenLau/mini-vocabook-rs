@@ -9,6 +9,7 @@ enum UserApiUrl {
     loginUser = "/api/user/login",
     getUserById = "/api/user/get_user_by_id",
     registerUser = "/api/user/register",
+    updateUserPassword = "/api/user/update_user_password",
     updateUser = "/api/user/update_user",
 }
 
@@ -33,10 +34,17 @@ const registerUser = async (userRegister: UserRegister): Promise<ApiResult<User>
     });
 }
 
+// 更新用户密码
+const updateUserPassword = async (email: string, password: string, modifyPw: string): Promise<ApiResult<User>> => {
+    return await axiosHttp.post(`${UserApiUrl.updateUserPassword}?email=${email}&password=${password}&modify_pw=${modifyPw}`).catch(_ => {
+        toast.error(`数据提交失败`);
+    });
+}
+
 // 更新用户信息
 const updateUser = async (user: UserRegister): Promise<ApiResult<User>> => {
     return await axiosHttp.post(`${UserApiUrl.updateUser}`, user).catch(_ => {
-        toast.error(`用户信息修改失败，请检查密码准确性`);
+        toast.error(`数据提交失败`);
     });
 }
 
@@ -44,5 +52,6 @@ export {
     loginUser,
     getUserById,
     registerUser,
+    updateUserPassword,
     updateUser,
 }
