@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import {mdiMessageText} from "@mdi/js";
+import {useToast} from "vue-toastification";
 
+const toast = useToast();
 </script>
 
 <template>
@@ -51,6 +53,7 @@ import {mdiMessageText} from "@mdi/js";
               image="/image/山峰星空.png"
               height="184"
               title="综合测验"
+              @click="toast.info('此功能还在开发当中，敬请期待~')"
               hover
           >
             <v-card-item>

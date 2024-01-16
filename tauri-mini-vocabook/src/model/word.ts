@@ -1,9 +1,9 @@
 export interface Word {
+    wordId: number;
+    word: string;
+    phonogram: string;
     definition: string;
     exampleSentence: string;
-    phonogram: string;
-    word: string;
-    wordId: number;
 }
 
 export interface MemoryTestsWord {
@@ -15,3 +15,19 @@ export interface MemoryTestsWord {
     selected: number[];
     isCorrect: boolean;
 }
+
+export interface SpellingTestsWord {
+    wordId: number;
+    word: string;
+    phonogram: string;
+    definition: string;
+    quiz: SpellingQuiz;
+    input: string;
+    status: "right" | "error" | "undefined";
+}
+
+export type SpellingQuiz = {
+    head: string;
+    middle: string;
+    tail: string;
+};
