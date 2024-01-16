@@ -1,6 +1,6 @@
 <script setup lang="ts">
-
 import {mdiMessageText} from "@mdi/js";
+
 </script>
 
 <template>
@@ -23,6 +23,7 @@ import {mdiMessageText} from "@mdi/js";
               image="/image/蓝紫色星空.png"
               height="184"
               title="记忆练习"
+              @click="$router.push({path: '/memory_tests'})"
               hover
           >
             <v-card-item>
@@ -36,6 +37,7 @@ import {mdiMessageText} from "@mdi/js";
               image="/image/绿色星空.png"
               height="184"
               title="拼写练习"
+              @click="$router.push({path: '/spelling_tests'})"
               hover
           >
             <v-card-item>

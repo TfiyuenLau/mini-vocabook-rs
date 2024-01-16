@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import {onMounted, ref, watch} from "vue";
-import {getLearningWords} from "../api/word.ts";
+import {getLearningWords, getReviewWords} from "../api/word.ts";
 import {useToast} from "vue-toastification";
 import {useAuthStore} from "../store/auth.ts";
 import {Word} from "../model/word.ts";
 import {ApiResult} from "../model/res.ts";
 import {useLearningStore} from "../store/learning.ts";
-import {mdiEmoticonConfusedOutline, mdiEmoticonCoolOutline, mdiGestureTap} from "@mdi/js";
+import {mdiEmoticonConfusedOutline, mdiEmoticonCoolOutline, mdiEmoticonExcitedOutline, mdiGestureTap} from "@mdi/js";
 import {insertOrUpdateRecord} from "../api/learning_record.ts";
 import {UploadRecord} from "../model/learning_record.ts";
+import {useRouter} from "vue-router";
 
 const toast = useToast();
+const router = useRouter();
 const authStore = useAuthStore();
 const learningStore = useLearningStore();
 
@@ -29,7 +31,7 @@ const learningWords = ref<Array<Word>>();
 
 const handleKnowWord = (wordId: number) => {
   const record = {
-    userId: authStore.user?.userId,
+    userId: authStore.user!.userId,
     wordId: wordId,
     flag: true,
   } as UploadRecord;
@@ -40,7 +42,7 @@ const handleKnowWord = (wordId: number) => {
 
 const handleNotKnowWord = (word: Word) => {
   const record = {
-    userId: authStore.user?.userId,
+    userId: authStore.user!.userId,
     wordId: word.wordId,
     flag: false,
   } as UploadRecord;
@@ -55,15 +57,21 @@ onMounted(() => {
   // 从store或api中获取当日的学习计划
   learningStore.checkAndUpdateWords();
   if (learningStore.words == null) {
-    getLearningWords(authStore.user!.userId, authStore.user!.wordbookId, 30).then((res: ApiResult<Array<Word>>) => {
-      if (res.status == 200) {
-        toast.success("今日单词任务获取成功");
+    // 获取今日待复习的单词
+    getReviewWords(authStore.user!.userId, authStore.user!.wordbookId, 5).then((reviewResult: ApiResult<Array<Word>>) => {
+      // 获取今日待学习的单词
+      getLearningWords(authStore.user!.userId, authStore.user!.wordbookId, 30).then((learningResult: ApiResult<Array<Word>>) => {
+        if (learningResult.status == 200) {
+          learningStore.words = [...reviewResult.data];
+          learningStore.words.push(...learningResult.data);
+          learningStore.date = new Date();
+          learningStore.cursor = 0;
+          learningWords.value = learningStore.words;
+          router.go(0);
 
-        learningStore.words = [...res.data];
-        learningStore.date = new Date();
-        learningStore.cursor = 0;
-        learningWords.value = learningStore.words;
-      }
+          toast.success(`今日任务：待复习单词${reviewResult.data.length}个，另有新词${learningResult.data.length}个。`);
+        }
+      });
     });
   } else {
     learningWords.value = learningStore.words;
@@ -87,7 +95,12 @@ onMounted(() => {
                     <span>{{ word.phonogram }}</span>
                   </v-card-item>
                   <v-card-actions>
-                    <v-row justify="center" class="mb-2">
+                    <v-row justify="center" class="mb-2" v-if="showDefinition">
+                      <v-btn variant="outlined" :prepend-icon="mdiEmoticonExcitedOutline" class="bg-white mr-4"
+                             size="large" rounded="xm" @click="window += 1">下一个单词
+                      </v-btn>
+                    </v-row>
+                    <v-row justify="center" class="mb-2" v-else>
                       <v-btn variant="outlined" :prepend-icon="mdiEmoticonConfusedOutline" class="bg-white mr-4"
                              size="large" rounded="xm" @click="handleNotKnowWord(word)">不认识
                       </v-btn>

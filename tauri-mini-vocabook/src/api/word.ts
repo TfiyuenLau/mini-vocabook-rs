@@ -1,7 +1,7 @@
 import {useToast} from "vue-toastification";
 import {ApiResult} from "../model/res";
 import axiosHttp from "../axios.http";
-import {Word} from "../model/word";
+import {MemoryTestsWord, Word} from "../model/word";
 
 const toast = useToast();
 
@@ -9,6 +9,7 @@ enum WordApiUrl {
     getWordById = "/api/word/get_word_by_id",
     getLearningWords = "/api/word/get_learning_words",
     getReviewWords = "/api/word/get_review_words",
+    getMemoryTestsWords = "/api/word/get_memory_tests_words",
 }
 
 // 通过wordbook_id获取对应的单词分页列表
@@ -34,8 +35,15 @@ const getReviewWords = async (userId: number, wordbookId: number, limit: number)
         });
 }
 
+// 获取指定用户的单词记忆测验集合
+const getMemoryTestsWords = async (userId: number, limit: number): Promise<ApiResult<Array<MemoryTestsWord>>> => {
+    return await axiosHttp.get(`${WordApiUrl.getMemoryTestsWords}?user_id=${userId}&limit=${limit}`)
+        .catch(_ => toast.error(`单词记忆测验数据获取失败`));
+}
+
 export {
     getWordById,
     getLearningWords,
     getReviewWords,
+    getMemoryTestsWords,
 }

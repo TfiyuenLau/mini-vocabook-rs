@@ -9,7 +9,6 @@ import {
   mdiEmail,
   mdiLock, mdiLockCheck,
   mdiLogin,
-  mdiRegisteredTrademark,
   mdiStar, mdiUpdate
 } from "@mdi/js";
 import {onMounted, reactive, ref} from "vue";
@@ -17,8 +16,10 @@ import {User, UserRegister} from "../model/user.ts";
 import {updateUser, updateUserPassword} from "../api/user.ts";
 import {ApiResult} from "../model/res.ts";
 import {getDateCheckInStatistic} from "../api/learning_record.ts";
+import {useRouter} from "vue-router";
 
 const toast = useToast();
+const router = useRouter();
 const authStore = useAuthStore();
 
 const checkInDateList = ref<Array<any>>();
@@ -45,8 +46,15 @@ const handleUpdateUserPassword = () => {
   } else {
     updateUserPassword(passwordUpdateForm.email, passwordUpdateForm.password, passwordUpdateForm.modifyPw).then((res: ApiResult<User>) => {
       if (res.status == 200) {
-        toast.success("账户密码更新成功");
         passwordUpdateDialog.value = false;
+
+        // 用户登出
+        router.push({path: `/`}).then(_ => {
+          authStore.logout();
+          router.go(0);
+
+          toast.success("账户密码更新成功");
+        });
       } else {
         toast.error(`用户密码修改失败，请检查旧密码的准确性`);
       }

@@ -2,7 +2,7 @@ use axum::Router;
 use axum::routing::{get, post};
 use crate::record::{date_check_in_statistic_handler, get_14days_record_statistic_handler, insert_or_update_record_handler, mastery_level_statistic_handler, word_cloud_statistic_handler};
 use crate::user::{get_user_by_id_handler, login_handler, register_handler, update_user_handler, update_user_password_handler};
-use crate::word::{all_word_handler, get_learning_word_handler, get_review_word_handler, get_word_by_id_handler};
+use crate::word::{all_word_handler, learning_word_handler, memory_tests_words_handler, review_word_handler, word_by_id_handler};
 use crate::wordbook::{wordbook_by_id_handler, wordbook_progress_handler, wordbook_word_count_handler, words_by_wordbook_id_handler};
 
 /// 初始化API路由
@@ -42,9 +42,10 @@ pub fn get_user_routes() -> Router {
 pub fn get_word_routes() -> Router {
     Router::new()
         .route("/get_all_word", get(all_word_handler))
-        .route("/get_word_by_id", get(get_word_by_id_handler))
-        .route("/get_learning_words", get(get_learning_word_handler))
-        .route("/get_review_words", get(get_review_word_handler))
+        .route("/get_word_by_id", get(word_by_id_handler))
+        .route("/get_learning_words", get(learning_word_handler))
+        .route("/get_review_words", get(review_word_handler))
+        .route("/get_memory_tests_words", get(memory_tests_words_handler))
 }
 
 /// 单词本二级路由

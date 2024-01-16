@@ -4,6 +4,8 @@ import QuizView from "../views/QuizView.vue";
 import StudyView from "../views/LearningView.vue";
 import StatisticsView from "../views/StatisticsView.vue";
 import UserView from "../views/UserView.vue";
+import MemoryTestsView from "../views/MemoryTestsView.vue";
+import SpellingTestsView from "../views/SpellingTestsView.vue";
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -12,7 +14,8 @@ const router = createRouter({
             path: '/',
             name: 'home',
             meta: {
-                chinese: "主 页"
+                title: "主 页",
+                backward: false,
             },
             component: () => HomeView,
         },
@@ -20,15 +23,35 @@ const router = createRouter({
             path: '/quiz',
             name: 'quiz',
             meta: {
-                chinese: "单词测试",
+                title: "单词测试",
+                backward: false,
             },
             component: () => QuizView,
+        },
+        {
+            path: '/memory_tests',
+            name: 'memory_tests',
+            meta: {
+                title: "单词记忆练习",
+                backward: true,
+            },
+            component: () => MemoryTestsView,
+        },
+        {
+            path: '/spelling_tests',
+            name: 'spelling_tests',
+            meta: {
+                title: "单词拼写练习",
+                backward: true,
+            },
+            component: () => SpellingTestsView,
         },
         {
             path: '/learning',
             name: 'learning',
             meta: {
-                chinese: "学习打卡",
+                title: "学习打卡",
+                backward: true,
             },
             component: () => StudyView,
         },
@@ -36,7 +59,8 @@ const router = createRouter({
             path: '/statistics',
             name: 'statistics',
             meta: {
-                chinese: "学习统计",
+                title: "学习统计",
+                backward: false,
             },
             component: () => StatisticsView,
         },
@@ -44,7 +68,8 @@ const router = createRouter({
             path: '/user',
             name: 'user',
             meta: {
-                chinese: "个人用户",
+                title: "个人用户",
+                backward: false,
             },
             component: () => UserView,
         },
