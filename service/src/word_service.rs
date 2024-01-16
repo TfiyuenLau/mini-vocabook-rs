@@ -140,3 +140,40 @@ pub async fn get_memory_tests_words(db: DatabaseConnection, user_id: u64, limit:
 
     Ok(word_list)
 }
+
+// 获取拼写测验单词列表
+pub async fn get_spelling_tests_words(db: DatabaseConnection, user_id: u64, limit: u64) -> Result<Vec<word::Model>, DbErr> {
+    let value_list = JsonValue::find_by_statement(Statement::from_sql_and_values(
+        DatabaseBackend::MySql,
+        r#"
+        SELECT
+            word.word_id as wordId,
+            word.word,
+            word.phonogram,
+            word.definition,
+            word.example_sentence as exampleSentence
+        FROM
+            learning_record AS lr
+        JOIN
+            word ON lr.word_id = word.word_id
+        WHERE
+            lr.user_id = ?
+            AND lr.mastery_level > 1
+        LIMIT ?;
+        "#,
+        [user_id.into(), limit.into()],
+    ))
+        .all(&db).await
+        .map_err(|e| {
+            eprintln!("Error fetching words: {:?}", e);
+            DbErr::RecordNotFound(e.to_string())
+        });
+
+    let mut result: Vec<word::Model> = Vec::new();
+    for word_value in value_list.unwrap() {
+        let word = serde_json::from_value(word_value); // 小驼峰下划线序列化问题
+        result.push(word.unwrap());
+    }
+
+    Ok(result)
+}

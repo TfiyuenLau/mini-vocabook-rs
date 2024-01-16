@@ -6,9 +6,10 @@ use axum::Extension;
 use axum::extract::Query;
 use axum::extract::rejection::QueryRejection;
 use common::dto::word_dto::MemoryTestsWord;
+use common::entity::word;
 use common::res::ResJson;
 use common::entity::word::Model;
-use service::word_service::{get_all_words, get_learning_words, get_memory_tests_words, get_review_words, get_word_by_id};
+use service::word_service::{get_all_words, get_learning_words, get_memory_tests_words, get_review_words, get_spelling_tests_words, get_word_by_id};
 use crate::AppState;
 
 pub async fn all_word_handler(Extension(state): Extension<Arc<AppState>>) -> ResJson<Vec<Model>> {
@@ -102,7 +103,7 @@ pub async fn review_word_handler(
     }
 }
 
-// 待复习单词处理器
+// 单词记忆测验处理器
 pub async fn memory_tests_words_handler(
     Extension(state): Extension<Arc<AppState>>,
     query: Result<Query<HashMap<String, u64>>, QueryRejection>,
@@ -112,6 +113,35 @@ pub async fn memory_tests_words_handler(
             let conn = &state.db_conn;
             let query_map: HashMap<String, u64> = query.0;
             match get_memory_tests_words(
+                conn.to_owned(),
+                *query_map.get("user_id").unwrap(),
+                *query_map.get("limit").unwrap()
+            ).await {
+                Ok(word) => {
+                    ResJson::success(word)
+                }
+                Err(_) => {
+                    ResJson::success(Vec::new())
+                }
+            }
+        }
+        Err(err) => {
+            eprintln!("handler error {:?}", err);
+            ResJson::error(err.to_string())
+        }
+    }
+}
+
+// 单词拼写测验处理器
+pub async fn spelling_tests_words_handler(
+    Extension(state): Extension<Arc<AppState>>,
+    query: Result<Query<HashMap<String, u64>>, QueryRejection>,
+) -> ResJson<Vec<word::Model>> {
+    match query {
+        Ok(query) => {
+            let conn = &state.db_conn;
+            let query_map: HashMap<String, u64> = query.0;
+            match get_spelling_tests_words(
                 conn.to_owned(),
                 *query_map.get("user_id").unwrap(),
                 *query_map.get("limit").unwrap()
