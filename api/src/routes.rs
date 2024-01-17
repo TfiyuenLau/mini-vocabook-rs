@@ -1,7 +1,7 @@
 use axum::Router;
 use axum::routing::{get, post};
 use crate::record::{date_check_in_statistic_handler, get_14days_record_statistic_handler, insert_or_update_record_handler, mastery_level_statistic_handler, word_cloud_statistic_handler};
-use crate::user::{get_user_by_id_handler, login_handler, register_handler, update_user_handler, update_user_password_handler};
+use crate::user::{get_user_by_id_handler, login_handler, register_handler, update_user_handler, update_user_password_handler, upload_file};
 use crate::word::{all_word_handler, learning_word_handler, memory_tests_words_handler, review_word_handler, spelling_tests_words_handler, word_by_id_handler};
 use crate::wordbook::{wordbook_by_id_handler, wordbook_progress_handler, wordbook_word_count_handler, words_by_wordbook_id_handler};
 
@@ -36,6 +36,7 @@ pub fn get_user_routes() -> Router {
         .route("/register", post(register_handler))
         .route("/update_user_password", post(update_user_password_handler))
         .route("/update_user", post(update_user_handler))
+        .route("/upload_file", post(upload_file))
 }
 
 /// 单词二级路由

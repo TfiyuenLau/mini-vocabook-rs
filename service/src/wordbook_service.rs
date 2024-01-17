@@ -32,7 +32,7 @@ pub async fn get_words_by_wordbook_id(db: DatabaseConnection, wordbook_id: u64, 
 
     // 分页组件进行分页
     let res: Vec<Model> = word_list.unwrap().get(0).unwrap().to_owned().1;
-    let pages = Pages::new(res.len(), 30);
+    let pages = Pages::new(res.len(), 10);
     let page = pages.with_offset(offset);
 
     Ok(res[page.start..=page.end].to_owned())

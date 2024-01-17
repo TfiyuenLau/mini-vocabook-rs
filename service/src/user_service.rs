@@ -1,6 +1,6 @@
 use sea_orm::{ActiveModelTrait, ColumnTrait, DatabaseConnection, DbErr, EntityTrait, IntoActiveModel, QueryFilter};
 use sea_orm::ActiveValue::Set;
-use serde_json::{json, Value};
+use serde_json::{Value};
 use common::dto::user_dto::{UserLoginDto, UserRegisterDto};
 use common::encrypt_password;
 use common::entity::prelude::User;
@@ -39,16 +39,10 @@ pub async fn get_user_by_id(db: DatabaseConnection, user_id: u64) -> Option<Mode
 }
 
 // 新增一个用户
-pub async fn insert_user(db: DatabaseConnection, mut user_json: Value) -> user::Model {
-    // 加密user_json中的密码
-    if let Some(obj) = user_json.as_object_mut() {
-        if let Some(pw_hash) = obj.get_mut("pw_hash") {
-            *pw_hash = json!(encrypt_password((*pw_hash).to_string()));
-        }
-    }
-
+pub async fn insert_user(db: DatabaseConnection, user_json: Value) -> user::Model {
     // 通过Json DTO构建ActiveModel对象
-    let user_dto: UserRegisterDto = serde_json::from_value(user_json).unwrap();
+    let mut user_dto: UserRegisterDto = serde_json::from_value(user_json).unwrap();
+    user_dto.password = encrypt_password(user_dto.password);
     let model: ActiveModel = user_dto.into();
 
     // 发送新增请求

@@ -2,7 +2,7 @@ mod test;
 
 use std::collections::HashMap;
 use std::sync::Arc;
-use axum::extract::Query;
+use axum::extract::{Multipart, Query};
 use axum::extract::rejection::{JsonRejection, QueryRejection};
 use axum::{Extension, Json};
 use serde_json::Value;
@@ -80,7 +80,7 @@ pub async fn register_handler(
     }
 }
 
-// 用户信息更新处理器
+// 用户密码更新处理器
 pub async fn update_user_password_handler(
     Extension(state): Extension<Arc<AppState>>,
     query: Result<Query<HashMap<String, String>>, QueryRejection>,
@@ -129,3 +129,23 @@ pub async fn update_user_handler(
         }
     }
 }
+
+// 用户头像文件上传
+pub async fn upload_file(mut multipart: Multipart) -> ResJson<Option<String>> {
+    if let Some(file) = multipart.next_field().await.unwrap() {
+        // 解析文件对象
+        let filename = file.file_name().unwrap().to_string();
+        let data = file.bytes().await.unwrap();
+
+        // 保存上传的文件
+        let _ = tokio::fs::write(&filename, &data)
+            .await
+            .map_err(|err| err.to_string());
+
+        ResJson::success(None)
+    } else {
+        ResJson::error(String::from("没有文件上传"))
+    }
+
+}
+
