@@ -7,14 +7,20 @@
   },
   "package": {
     "productName": "tauri-mini-vocabook",
-    "version": "0.0.0"
+    "version": "0.1.0"
   },
   "tauri": {
     "allowlist": {
-      "all": false,
+      "all": true,
       "shell": {
         "all": false,
         "open": true
+      },
+      "http": {
+        "scope": [
+          "http://**",
+          "https://**"
+        ]
       }
     },
     "bundle": {
@@ -40,8 +46,8 @@
     "windows": [
       {
         "fullscreen": false,
-        "resizable": true,
-        "title": "tauri-mini-vocabook",
+        "resizable": false,
+        "title": "Mini Vocabook",
         "width": 800,
         "height": 600,
         "maximizable": false

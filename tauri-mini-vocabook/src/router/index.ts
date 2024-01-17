@@ -1,11 +1,4 @@
 import {createRouter, createWebHashHistory} from 'vue-router'
-import HomeView from "../views/HomeView.vue";
-import QuizView from "../views/QuizView.vue";
-import StudyView from "../views/LearningView.vue";
-import StatisticsView from "../views/StatisticsView.vue";
-import UserView from "../views/UserView.vue";
-import MemoryTestsView from "../views/MemoryTestsView.vue";
-import SpellingTestsView from "../views/SpellingTestsView.vue";
 
 const router = createRouter({
     history: createWebHashHistory(),
@@ -17,7 +10,7 @@ const router = createRouter({
                 title: "主 页",
                 backward: false,
             },
-            component: () => HomeView,
+            component: () => import("../views/HomeView.vue"),
         },
         {
             path: '/quiz',
@@ -26,7 +19,7 @@ const router = createRouter({
                 title: "单词测试",
                 backward: false,
             },
-            component: () => QuizView,
+            component: () => import("../views/QuizView.vue"),
         },
         {
             path: '/memory_tests',
@@ -35,7 +28,7 @@ const router = createRouter({
                 title: "单词记忆练习",
                 backward: true,
             },
-            component: () => MemoryTestsView,
+            component: () => import("../views/MemoryTestsView.vue"),
         },
         {
             path: '/spelling_tests',
@@ -44,7 +37,7 @@ const router = createRouter({
                 title: "单词拼写练习",
                 backward: true,
             },
-            component: () => SpellingTestsView,
+            component: () => import("../views/SpellingTestsView.vue"),
         },
         {
             path: '/learning',
@@ -53,7 +46,7 @@ const router = createRouter({
                 title: "学习打卡",
                 backward: true,
             },
-            component: () => StudyView,
+            component: () => import("../views/LearningView.vue"),
         },
         {
             path: '/statistics',
@@ -62,7 +55,7 @@ const router = createRouter({
                 title: "学习统计",
                 backward: false,
             },
-            component: () => StatisticsView,
+            component: () => import("../views/StatisticsView.vue"),
         },
         {
             path: '/user',
@@ -71,7 +64,7 @@ const router = createRouter({
                 title: "个人用户",
                 backward: false,
             },
-            component: () => UserView,
+            component: () => import("../views/UserView.vue"),
         },
     ]
 });

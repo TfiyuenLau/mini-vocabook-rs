@@ -36,6 +36,7 @@ const userUpdateForm = reactive<UserRegister>({
   username: authStore.user!.username,
   wordbookId: authStore.user!.wordbookId,
 });
+const avatarList = ["像素小男孩.png", "o_8cc2c399.png", "像素插画学生.png", "像素绅士.png", "像素美女.png", "像素老师.png", "像素职场女性.png", "像素长发女孩.png", "项目儿童.png"]
 
 // 更新用户密码
 const handleUpdateUserPassword = () => {
@@ -92,9 +93,9 @@ onMounted(() => {
 
 <template>
   <v-container>
-    <v-card image="/image/material-pattern-wallpaper.jpg">
-      <v-row justify="start" class="mt-4 mb-2">
-        <v-col :cols="10" offset="1">
+    <v-card image="/image/background/material-pattern-wallpaper.jpg">
+      <v-row justify="center" class="mt-4 mb-2">
+        <v-col :cols="10">
           <v-card variant="elevated" title="我的账号" :prepend-icon="mdiAccountBox">
             <v-row justify="start">
               <v-col :cols="7">
@@ -107,21 +108,21 @@ onMounted(() => {
                   </div>
                   <div class="text-caption">Hello, Welcome to Mini Vocabook client.</div>
                 </v-card-item>
-                <v-card-actions class="d-flex justify-end">
+                <v-card-actions class="d-flex justify-end align-center">
                   <v-btn variant="outlined" color="indigo" rounded="xm" @click="passwordUpdateDialog = true;">修改密码</v-btn>
-                  <v-btn variant="elevated" color="indigo" rounded="xm" @click="userUpdateDialog = true;">修改信息</v-btn>
+                  <v-btn variant="elevated" color="indigo" rounded="xm" @click="userUpdateDialog = true;">编辑信息</v-btn>
                 </v-card-actions>
               </v-col>
               <v-col :cols="4">
                 <v-card class="d-flex justify-center align-center">
                   <v-avatar class="ma-3" size="128">
-                    <v-img src="/image/o_8cc2c399.png"></v-img>
+                    <v-img :src="'/image/avatar/' + avatarList[authStore.user!.userId % avatarList.length]"></v-img>
                   </v-avatar>
                 </v-card>
               </v-col>
             </v-row>
             <v-divider></v-divider>
-            <v-timeline direction="horizontal" class="mt-4 mb-2" v-if="checkInDateList">
+            <v-timeline v-if="checkInDateList && checkInDateList.length > 0" direction="horizontal" class="mt-4 mb-2">
               <v-timeline-item dot-color="indigo" :icon="mdiStar" v-if="checkInDateList.length >= 3">
                 <template v-slot:opposite>
                   {{ checkInDateList[2].study_date }}
@@ -147,6 +148,11 @@ onMounted(() => {
                 </v-alert>
               </v-timeline-item>
             </v-timeline>
+            <v-row v-else justify="center" class="mt-8 mb-8">
+              <v-col :cols="10">
+                <div class="text-h4 text-primary text-center">暂未找到学习记录哦，从今天起开始学习吧~</div>
+              </v-col>
+            </v-row>
           </v-card>
         </v-col>
       </v-row>

@@ -52,7 +52,7 @@ const handleRegister = () => {
   <v-container fill-height fluid>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="8" md="4">
-        <v-card image="https://images.pexels.com/photos/925743/pexels-photo-925743.jpeg">
+        <v-card image="/image/pexels-joão-jesus-925743.jpg">
           <v-card-title class="headline text-center mt-4">用户登录</v-card-title>
 
           <v-card-text>

@@ -14,6 +14,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 
 const userInfo: UnwrapRef<User | null> = authStore.user;
+const avatarList = ["像素小男孩.png", "o_8cc2c399.png", "像素插画学生.png", "像素绅士.png", "像素美女.png", "像素老师.png", "像素职场女性.png", "像素长发女孩.png", "项目儿童.png"]
 
 // 打开视图
 const openView = (value: string) => {
@@ -24,7 +25,9 @@ const openView = (value: string) => {
 const handleLogout = async () => {
   await router.push({path: `/`});
   authStore.logout();
-  router.go(0); // 跳转后刷新
+  if (router.currentRoute.value.path === "/") {
+    router.go(0);
+  }
 }
 
 onMounted(() => {
@@ -40,9 +43,9 @@ onMounted(() => {
       permanent
       rail
   >
-    <v-list v-if="userInfo">
+    <v-list v-if="authStore.isLoggedIn && userInfo">
       <v-list-item
-          prepend-avatar="/image/o_8cc2c399.png"
+          :prepend-avatar="'/image/avatar/' + avatarList[authStore.user!.userId % avatarList.length]"
           :title="userInfo.username"
           :subtitle="userInfo.email"
       >
@@ -52,7 +55,7 @@ onMounted(() => {
       </v-list-item>
     </v-list>
     <v-list v-else>
-      <v-list-item prepend-avatar="/image/akalin.jpg"></v-list-item>
+      <v-list-item prepend-avatar="/image/avatar/akalin.jpg"></v-list-item>
     </v-list>
 
     <v-divider></v-divider>

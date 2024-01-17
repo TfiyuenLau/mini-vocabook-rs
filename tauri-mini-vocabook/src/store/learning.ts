@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
-import {Word} from "../model/word";
+import {LearningWord} from "../model/word";
 
 // 今日学习任务存储
 export const useLearningStore = defineStore("learning", {
     state: () => ({
-        words: null as Array<Word> | null,
+        words: null as Array<LearningWord> | null,
         date: null as Date | null,
         cursor: 0,
     }),

@@ -9,7 +9,7 @@ const authStore = useAuthStore();
 
 const dateBarChartRef = ref();
 const masteryPieChartRef = ref();
-const wordcloudChartRef = ref();
+const wordCloudChartRef = ref();
 
 // 打卡日期柱状图
 const initDateBarChart = () => {
@@ -77,7 +77,7 @@ const initMasteryPieChart = () => {
             name = "未知";
         }
 
-        return { name, value: item.word_count };
+        return {name, value: item.word_count};
       });
 
       const option = {
@@ -106,8 +106,8 @@ const initMasteryPieChart = () => {
 }
 
 // 单词词云图
-const initWordcloudChart = () => {
-  const chart = echarts.init(wordcloudChartRef.value);
+const initWordCloudChart = () => {
+  const chart = echarts.init(wordCloudChartRef.value);
 
   getWordCloudStatistic(authStore.user!.userId).then(res => {
     const data = res.data.map((item, index) => ({
@@ -218,14 +218,14 @@ const initWordcloudChart = () => {
 onMounted(() => {
   initDateBarChart();
   initMasteryPieChart();
-  initWordcloudChart();
+  initWordCloudChart();
 })
 
 </script>
 
 <template>
   <v-container>
-    <v-card image="/image/material-pattern-wallpaper.jpg">
+    <v-card image="/image/background/material-pattern-wallpaper.jpg">
       <v-row justify="start">
         <v-col :cols="10" :offset="1" class="mt-4 mb-2">
           <v-card>
@@ -241,7 +241,7 @@ onMounted(() => {
         </v-col>
         <v-col :cols="5">
           <v-card>
-            <div ref="wordcloudChartRef" style="width: 100%;height: 256px;"></div>
+            <div ref="wordCloudChartRef" style="width: 100%;height: 256px;"></div>
           </v-card>
         </v-col>
       </v-row>

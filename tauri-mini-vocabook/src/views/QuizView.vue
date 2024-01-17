@@ -7,7 +7,7 @@ const toast = useToast();
 
 <template>
   <v-container>
-    <v-card image="/image/material.jpg">
+    <v-card image="/image/background/material.jpg">
       <v-row justify="center" class="mt-8 mb-8">
         <v-alert
             class="ml-12 mr-12"

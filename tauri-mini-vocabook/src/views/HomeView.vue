@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import {computed, onMounted, ref, watchEffect} from 'vue'
-import {mdiArrowRightBoldCircleOutline, mdiClose, mdiListStatus} from "@mdi/js";
+import {mdiArrowRightBoldCircleOutline, mdiBookOutline, mdiClose, mdiListStatus} from "@mdi/js";
 import VueDatePicker from '@vuepic/vue-datepicker'
 import '@vuepic/vue-datepicker/dist/main.css'
-import {Store} from "tauri-plugin-store-api";
 import {useToast} from 'vue-toastification';
 import {useAuthStore} from "../store/auth.ts";
 import {Word} from "../model/word.ts";
@@ -15,7 +14,6 @@ import LoginRegisterFrom from "../components/LoginRegisterFrom.vue";
 
 const toast = useToast();
 const authStore = useAuthStore();
-const store = new Store(".settings.dat");
 
 const loginDialog = ref(false);
 const timeDialog = ref(false);
@@ -56,7 +54,7 @@ watchEffect(() => {
 onMounted(() => {
   // 获取推荐单词
   getWordById(Math.floor(Math.random() * 1000)).then(res => {
-    recommendWord.value = {...res.data};
+    recommendWord.value = res.data;
   })
 
   // 获取登录用户的目标单词本
@@ -76,20 +74,13 @@ onMounted(() => {
     });
   }
 
-  // 获取初始化的目标日期
-  store.get("targetDate").then((res: any) => {
-    if (res == null) {
-      setTargetDate(new Date())
-    } else {
-      selectedDate.value = res;
-    }
-  });
+  // 初始化目标日期
+  selectedDate.value = authStore.targetDate;
 });
 
 // 存储目标日期
 const setTargetDate = async (date: Date) => {
-  await store.set("targetDate", date);
-  await store.save();
+  authStore.targetDate = date;
   toast.success(`目标日期修改成功, 距离今日还剩${daysDiff.value}天。`);
   timeDialog.value = false;
 };
@@ -98,7 +89,7 @@ const setTargetDate = async (date: Date) => {
 <template>
   <v-container>
     <!-- Home主页面 -->
-    <v-card image="/image/alm-friuli-snow-snowfall-45204.jpeg">
+    <v-card image="/image/background/alm-friuli-snow-snowfall-45204.jpeg">
       <v-row justify="start" class="mt-4">
         <v-col :cols="5" offset="1">
           <v-card
@@ -237,7 +228,7 @@ const setTargetDate = async (date: Date) => {
         width="100%"
         scrollable
     >
-      <v-card :title="wordbook?.bookName" v-if="wordlist">
+      <v-card :prepend-icon="mdiBookOutline" :title="wordbook?.bookName" v-if="wordlist">
         <v-data-table :headers="listHeaders" :items="wordlist"></v-data-table>
       </v-card>
     </v-dialog>

@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import {computed, onMounted, ref} from "vue";
-import {SpellingQuiz, SpellingTestsWord, Word} from "../model/word.ts";
+import {computed, nextTick, onMounted, ref, watch} from "vue";
+import {SpellingQuiz, SpellingTestsWord} from "../model/word.ts";
 import {getSpellingTestsWords} from "../api/word.ts";
 import {useToast} from "vue-toastification";
 import {useAuthStore} from "../store/auth.ts";
 import {
   mdiCheck,
   mdiCloseThick,
-  mdiEmoticonKissOutline, mdiLightbulbOnOutline,
+  mdiLightbulbOnOutline,
   mdiMicrosoftWord, mdiWaveform,
 } from "@mdi/js";
 import {UploadRecord} from "../model/learning_record.ts";
@@ -18,6 +18,14 @@ const authStore = useAuthStore();
 
 const tab = ref(0);
 const spellingTestsWords = ref<Array<SpellingTestsWord>>();
+const audioRef = ref<HTMLAudioElement[]>();
+
+const handlePlayAudio = () => {
+  if (audioRef.value) {
+    audioRef.value[0].src = audioUrl.value;
+    audioRef.value[0].play();
+  }
+};
 
 const handleSubmit = (word: SpellingTestsWord) => {
   if (word.input === word.quiz.middle) {
@@ -42,15 +50,32 @@ onMounted(() => {
   getSpellingTestsWords(authStore.user!.userId, 30).then(res => {
     if (res.status === 200) {
       spellingTestsWords.value = res.data;
+      nextTick(() =>{
+        handlePlayAudio();
+      })
       for (let word of spellingTestsWords.value) {
         word.quiz = generateSpellingQuiz(word.word);
         word.input = "";
         word.status = "undefined";
       }
 
-      toast.success(`当前共有${spellingTestsWords.value?.length}个单词待完成`)
+      toast.success(`当前共有${spellingTestsWords.value?.length}个单词待完成`);
     }
   });
+});
+
+// 当窗口改变时播放音频
+watch(tab, () => {
+  handlePlayAudio();
+});
+
+// 使用有道API获取当前单词的音频地址
+const audioUrl = computed(() => {
+  if (spellingTestsWords.value) {
+    return `http://dict.youdao.com/dictvoice?audio=${spellingTestsWords.value[tab.value].word}`;
+  } else {
+    return "http://dict.youdao.com/dictvoice?audio=error";
+  }
 });
 
 // 生成拼写测验的单词
@@ -58,7 +83,7 @@ const generateSpellingQuiz = (word: string): SpellingQuiz => {
   // 获取单词长度
   const wordLength = word.length;
   if (wordLength < 2) {
-    throw new Error('单词长度不能小于2。');
+    throw new Error("单词长度不能小于2。");
   }
 
   // 随机生成中部截取的长度，保证最小为2，最大为单词长度
@@ -91,13 +116,13 @@ const rightCount = computed(() => {
 <template>
   <v-container>
     <v-window v-model="tab" show-arrows>
-      <v-card image="/image/material.jpg" style="max-width: 688px;min-height: 493px">
+      <v-card image="/image/background/material.jpg" style="max-width: 688px;min-height: 493px">
         <v-tabs v-model="tab" color="indigo" align-tabs="start">
-          <v-tab class="text-white" v-for="word in spellingTestsWords">
+          <v-tab class="text-white" v-for="word in spellingTestsWords" :key="word.wordId">
             ID-{{ word.wordId }}
           </v-tab>
         </v-tabs>
-        <v-window-item v-for="word in spellingTestsWords">
+        <v-window-item v-for="word in spellingTestsWords" :key="word.wordId">
           <v-row justify="center" class="mt-8">
             <v-col :cols="10" class="d-flex justify-center align-center">
               <v-card variant="elevated" color="indigo">
@@ -114,9 +139,9 @@ const rightCount = computed(() => {
                   <v-row justify="center">
                     <v-col :cols="9">
                       <v-alert class="text-primary text-overline text-center">
-                        <v-icon :icon="mdiEmoticonKissOutline" :size="24"></v-icon>
+                        <v-btn :icon="mdiWaveform" variant="flat" color="indigo" size="x-small" @click="handlePlayAudio"></v-btn>
                         {{ word.phonogram }}
-                        <v-icon :icon="mdiWaveform" :size="24"></v-icon>
+                        <audio ref="audioRef" :hidden="true"></audio>
                       </v-alert>
                     </v-col>
                   </v-row>

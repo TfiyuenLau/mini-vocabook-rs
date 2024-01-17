@@ -6,6 +6,7 @@ export const useAuthStore = defineStore("auth", {
     state: () => ({
         user: null as User | null,
         isLoggedIn: false,
+        targetDate: new Date(),
     }),
     actions: {
         login(userInfo: User) {

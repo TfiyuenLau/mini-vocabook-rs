@@ -4,6 +4,27 @@ import DrawerNavigation from "./components/DrawerNavigation.vue";
 import {mdiClose} from "@mdi/js";
 
 const router = useRouter();
+
+//屏蔽右键菜单
+document.oncontextmenu = function (event: any) {
+  if (window.event) {
+    event = window.event
+  }
+  try {
+    var the = event.srcElement
+    if (
+        !(
+            (the.tagName == 'INPUT' && the.type.toLowerCase() == 'text') ||
+            the.tagName == 'TEXTAREA'
+        )
+    ) {
+      return false
+    }
+    return true
+  } catch (e) {
+    return false
+  }
+}
 </script>
 
 <template>
