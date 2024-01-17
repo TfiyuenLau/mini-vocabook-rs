@@ -58,7 +58,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: 16
+          node-version: 18
 
       # 安装 Rust
       - name: Install Rust stable
