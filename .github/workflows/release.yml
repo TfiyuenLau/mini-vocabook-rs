@@ -46,6 +46,11 @@ jobs:
         platform: [ macos-latest, ubuntu-latest, windows-latest ]
 
     runs-on: ${{ matrix.platform }}
+
+    defaults:
+      run:
+        working-directory: tauri-mini-vocabook
+
     steps:
       - uses: actions/checkout@v2
 
@@ -97,8 +102,7 @@ jobs:
 
       # 安装依赖执行构建，以及推送 github release
       - name: Install app dependencies and build it
-        # 这里的pubhome要修改为你package.json里面配置的编译命令
-        run: yarn && yarn pubhome
+        run: yarn && yarn tauri build
       - uses: tauri-apps/tauri-action@v0.3
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
