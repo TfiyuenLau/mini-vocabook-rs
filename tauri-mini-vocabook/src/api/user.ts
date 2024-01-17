@@ -7,11 +7,11 @@ import {Body} from "@tauri-apps/api/http";
 const toast = useToast();
 
 enum UserApiUrl {
-    loginUser = "/api/user/login",
-    getUserById = "/api/user/get_user_by_id",
-    registerUser = "/api/user/register",
-    updateUserPassword = "/api/user/update_user_password",
-    updateUser = "/api/user/update_user",
+    loginUser = "/user/login",
+    getUserById = "/user/get_user_by_id",
+    registerUser = "/user/register",
+    updateUserPassword = "/user/update_user_password",
+    updateUser = "/user/update_user",
 }
 
 // 登陆校验

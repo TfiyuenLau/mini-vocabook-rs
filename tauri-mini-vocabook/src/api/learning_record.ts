@@ -7,11 +7,11 @@ import {Body} from "@tauri-apps/api/http";
 const toast = useToast();
 
 enum LearningRecordApiUrl {
-    get14daysRecordStatistic = "/api/record/get_14days_record_statistic",
-    getMasteryLevelStatistic = "/api/record/get_mastery_level_statistic",
-    getWordCloudStatistic = "/api/record/get_word_cloud_statistic",
-    getDateCheckInStatistic = "/api/record/get_date_check_in_statistic",
-    insertOrUpdateRecord = "/api/record/insert_or_update_record",
+    get14daysRecordStatistic = "/record/get_14days_record_statistic",
+    getMasteryLevelStatistic = "/record/get_mastery_level_statistic",
+    getWordCloudStatistic = "/record/get_word_cloud_statistic",
+    getDateCheckInStatistic = "/record/get_date_check_in_statistic",
+    insertOrUpdateRecord = "/record/insert_or_update_record",
 }
 
 // 获取用户近十四日统计信息

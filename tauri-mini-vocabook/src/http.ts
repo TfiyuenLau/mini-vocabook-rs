@@ -34,8 +34,8 @@ const buildURL = (url: string, params: any): string => {
 };
 
 // 服务器地址
-const server = 'http://localhost:3030';
-const baseURL = `${server}`;
+const server = 'https://mini-vocabook-rs.cpolar.top'; // http://localhost:3030
+const baseURL = `${server}/api`;
 
 // 请求体类型常量
 const BODY_TYPE = {

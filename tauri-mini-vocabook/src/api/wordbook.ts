@@ -7,10 +7,10 @@ import http from "../http.ts";
 const toast = useToast();
 
 enum WordbookApiUrl {
-    getWordbookById = "/api/wordbook/get_wordbook_by_id",
-    getWordsByWordbookId = "/api/wordbook/get_words_by_wordbook_id",
-    getWordbookWordCount = "/api/wordbook/get_wordbook_word_count",
-    getWordbookProgress = "/api/wordbook/get_wordbook_progress",
+    getWordbookById = "/wordbook/get_wordbook_by_id",
+    getWordsByWordbookId = "/wordbook/get_words_by_wordbook_id",
+    getWordbookWordCount = "/wordbook/get_wordbook_word_count",
+    getWordbookProgress = "/wordbook/get_wordbook_progress",
 }
 
 // 通过wordbook_id获取对应的单词本

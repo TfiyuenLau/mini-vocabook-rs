@@ -6,11 +6,11 @@ import http from "../http.ts";
 const toast = useToast();
 
 enum WordApiUrl {
-    getWordById = "/api/word/get_word_by_id",
-    getLearningWords = "/api/word/get_learning_words",
-    getReviewWords = "/api/word/get_review_words",
-    getMemoryTestsWords = "/api/word/get_memory_tests_words",
-    getSpellingTestsWords = "/api/word/get_spelling_tests_words",
+    getWordById = "/word/get_word_by_id",
+    getLearningWords = "/word/get_learning_words",
+    getReviewWords = "/word/get_review_words",
+    getMemoryTestsWords = "/word/get_memory_tests_words",
+    getSpellingTestsWords = "/word/get_spelling_tests_words",
 }
 
 // 通过wordbook_id获取对应的单词分页列表
