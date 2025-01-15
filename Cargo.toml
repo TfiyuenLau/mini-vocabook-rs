@@ -14,7 +14,7 @@ tracing-subscriber = "0.3"
 
 [workspace]
 members = ["service", "api", "common"]
-exclude = ["./tauri-mini-vocabook/src-tauri"]
+exclude = ["./app/src-tauri"]
 
 [workspace.dependencies]
 tower = "0"

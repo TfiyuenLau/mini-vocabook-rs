@@ -47,7 +47,7 @@ cargo run
 ①进入前端目录：
 
 ~~~bash
-cd tauri-mini-vocabook
+cd app
 ~~~
 
 ②安装依赖：
@@ -56,7 +56,13 @@ cd tauri-mini-vocabook
 pnpm install
 ~~~
 
-③运行应用：
+③修改 tauri 项目下的 `http.ts` 文件，将 `server` 变量更改为指定的后端地址，例如：
+~~~ts
+// 服务器地址
+const server = 'http://localhost:3030';
+~~~
+
+④运行应用：
 
 ~~~bash
 pnpm tauri dev

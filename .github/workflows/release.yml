@@ -20,7 +20,7 @@ jobs:
     defaults:
       run:
         # 设置工作区路径
-        working-directory: tauri-mini-vocabook
+        working-directory: app
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
