@@ -2,7 +2,6 @@ import {User, UserLogin, UserRegister} from "../model/user";
 import {ApiResult} from "../model/res";
 import {useToast} from "vue-toastification";
 import http from "../http.ts";
-import {Body} from "@tauri-apps/api/http";
 
 const toast = useToast();
 
@@ -39,8 +38,9 @@ const getUserById = async (userId: number): Promise<ApiResult<User>> => {
 
 // 用户注册
 const registerUser = async (userRegister: UserRegister): Promise<ApiResult<User>> => {
-    const body = Body.json(userRegister);
-    let res = await http(`${UserApiUrl.registerUser}`, {method: "post", body}).catch(_ => {
+    const body = JSON.stringify(userRegister);
+    let options = {method: "post", body: body, type: "Form"};
+    let res = await http(`${UserApiUrl.registerUser}`, options).catch(_ => {
         toast.error(`数据提交失败`);
     });
     return res?.data as Promise<ApiResult<User>>;
@@ -56,8 +56,9 @@ const updateUserPassword = async (email: string, password: string, modifyPw: str
 
 // 更新用户信息
 const updateUser = async (user: UserRegister): Promise<ApiResult<User>> => {
-    const body = Body.json(user)
-    let res = await http(`${UserApiUrl.updateUser}`, {method: "post", body}).catch(_ => {
+    const body = JSON.stringify(user)
+    let options = {method: "post", body: body, type: "Form"};
+    let res = await http(`${UserApiUrl.updateUser}`, options).catch(_ => {
         toast.error(`数据提交失败`);
     });
     return res?.data as Promise<ApiResult<User>>;

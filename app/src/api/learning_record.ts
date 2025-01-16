@@ -2,7 +2,6 @@ import {useToast} from "vue-toastification";
 import {LearningRecord, UploadRecord} from "../model/learning_record";
 import {ApiResult} from "../model/res";
 import http from "../http.ts";
-import {Body} from "@tauri-apps/api/http";
 
 const toast = useToast();
 
@@ -62,8 +61,9 @@ const getDateCheckInStatistic = async (userId: number, limit: number): Promise<A
 
 // 更新学习记录熟练度
 const insertOrUpdateRecord = async (data: UploadRecord): Promise<ApiResult<LearningRecord>> => {
-    const body = Body.json(data);
-    let res = await http(`${LearningRecordApiUrl.insertOrUpdateRecord}`, {method: "post", body}).catch(_ => {
+    const body = JSON.stringify(data);
+    let options = {method: "post", body: body, type: "Form"};
+    let res = await http(`${LearningRecordApiUrl.insertOrUpdateRecord}`, options).catch(_ => {
         toast.error("学习记录更新失败");
     });
     return res?.data as Promise<ApiResult<LearningRecord>>;
