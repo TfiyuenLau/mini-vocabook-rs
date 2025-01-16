@@ -40,7 +40,7 @@ jobs:
         with:
           workspaces: './src-tauri -> target'
 
-      - name: Sync node version and insatll nodejs
+      - name: Sync node version and install nodejs
         uses: actions/setup-node@v3
         with:
           node-version: 18
@@ -74,7 +74,7 @@ jobs:
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
           TAURI_KEY_PASSWORD: ${{ secrets.TAURI_KEY_PASSWORD }}
 
-      - name: Tauri Action
+      - name: Mini Vocabook Tauri Action
         uses: tauri-apps/tauri-action@v0.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -86,3 +86,24 @@ jobs:
           releaseBody: 'See the assets to download and install this version.'
           releaseDraft: true
           prerelease: false
+
+      # 构建 Axum 服务端应用
+      - name: Build Mini Vocabook Axum server
+        run: cargo build --release
+        working-directory: ${{ github.workspace }}
+
+      - name: Package executables
+        if: matrix.platform == 'ubuntu-20.04'
+        run: |
+          mkdir -p dist/linux
+          cp target/release/mini-vocabook-rs dist/linux/mini-vocabook-rs-${{ github.ref_name }}
+      - name: Package executables
+        if: matrix.platform == 'macos-latest'
+        run: |
+          mkdir -p dist/macos
+          cp target/release/mini-vocabook-rs dist/macos/mini-vocabook-rs-${{ github.ref_name }}
+      - name: Package executables
+        if: matrix.platform == 'windows-latest'
+        run: |
+          mkdir -p dist/windows
+          cp target/release/mini-vocabook-rs.exe dist/windows/mini-vocabook-rs-${{ github.ref_name }}.exe
