@@ -3,6 +3,8 @@
 **mini-vocabook-rs** 是一个基于 Rust 和 Tauri 的简易 C/S 架构单词本桌面应用，其在后端服务器采用 Rust Axum 框架，在客户端组件库上采用
 Vuetify3 及其 Material Design 3 设计语言。
 
+[在此处](https://github.com/TfiyuenLau/mini-vocabook-rs/releases)下载对应平台的客户端和服务端程序。
+
 ## 一、功能特性
 
 1. 每日打卡：逐步学习目标单词本的相关知识，包括单词、音标、读音、释义和示例语句。
@@ -42,9 +44,9 @@ cargo run
 
 后端默认地址为 http://localhost:3030。
 
-### Ⅱ、Tauri前端应用
+### Ⅱ、Tauri客户端应用
 
-①进入前端目录：
+①进入客户端项目目录：
 
 ~~~bash
 cd app
@@ -62,10 +64,10 @@ pnpm install
 const server = 'http://localhost:3030';
 ~~~
 
-④运行应用：
+④调试应用：
 
 ~~~bash
-pnpm tauri dev
+cargo tauri dev
 ~~~
 
 前端应用默认占用 1420 端口。
