@@ -3,64 +3,51 @@ name: Release Axum App
 on:
   push:
     branches:
-      - main
+      - master
     tags:
       - 'v*'
   pull_request:
     branches:
-      - main
+      - master
   workflow_dispatch:
 
 jobs:
-  publish-tauri:
-    permissions:
-      contents: write
+  build-rust:
     strategy:
-      fail-fast: false
       matrix:
-        include:
-          - platform: 'macos-latest'
-            args: '--target aarch64-apple-darwin'
-          - platform: 'macos-latest'
-            args: '--target x86_64-apple-darwin'
-          - platform: 'ubuntu-22.04'
-            args: ''
-          - platform: 'windows-latest'
-            args: ''
-
+        platform: [ubuntu-latest]
     runs-on: ${{ matrix.platform }}
-    defaults:
-      run:
-        working-directory: app
     steps:
       - uses: actions/checkout@v4
-
-      - name: setup node
-        uses: actions/setup-node@v4
         with:
-          node-version: lts/*
-
-      - name: install Rust stable
-        uses: dtolnay/rust-toolchain@stable
+          fetch-depth: 0
+          submodules: recursive
+      - name: Install Rust
+        run: rustup toolchain install stable --component llvm-tools-preview
+      - name: Install cargo-llvm-cov
+        uses: taiki-e/install-action@cargo-llvm-cov
+      - name: install nextest
+        uses: taiki-e/install-action@nextest
+      - uses: Swatinem/rust-cache@v2
+      - name: Check code format
+        run: cargo fmt -- --check
+      - name: Check the package for errors
+        run: cargo check --all
+      - name: Lint rust sources
+        run: cargo clippy --all-targets --all-features --tests --benches -- -D warnings
+      - name: Execute rust tests
+        run: cargo nextest run --all-features
+      - name: Generate a changelog
+        uses: orhun/git-cliff-action@v3
+        id: git-cliff
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
-
-      - name: install dependencies (ubuntu only)
-        if: matrix.platform == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.0-dev libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-
-      - name: install frontend dependencies
-        run: yarn install
-
-      - uses: tauri-apps/tauri-action@v0
+          config: cliff.toml
+          args: -vv --latest --strip header
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OUTPUT: CHANGELOG.md
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
-          tagName: app-v__VERSION__
-          releaseName: 'mini-vocabook-rs-v__VERSION__'
-          releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
-          prerelease: false
-          args: ${{ matrix.args }}
+          body: ${{ steps.git-cliff.outputs.content }}

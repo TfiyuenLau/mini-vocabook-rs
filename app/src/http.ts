@@ -28,21 +28,21 @@ const buildURL = (url: string, params: any): string => {
     }
     const serializedParams = qs.stringify(params);
     if (serializedParams) {
-        url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
+        url += (url.indexOf("?") === -1 ? "?" : "&") + serializedParams;
     }
     return url;
 };
 
 // 服务器地址
-const server = 'http://localhost:3030'; // 上线时，将 http://localhost:3030 替换为真实后端服务地址
+const server = "http://localhost:3030"; // 上线时，将 http://localhost:3030 替换为真实后端服务地址
 const baseURL = `${server}/api`;
 
 // 请求体类型常量
 const BODY_TYPE = {
-    Form: 'Form',
-    Json: 'Json',
-    Text: 'Text',
-    Bytes: 'Bytes',
+    Form: "Form",
+    Json: "Json",
+    Text: "Text",
+    Bytes: "Bytes",
 };
 
 enum ResponseType {
@@ -65,8 +65,10 @@ const http = async (url: string, options: any = {}) => {
     // TODO: 在 headers 中添加 token 或 cookie 等信息
 
     if (options?.body) {
-        if (options.type === BODY_TYPE.Form) {
+        if (options.type === BODY_TYPE.Json) {
             options.headers["Content-Type"] = "application/json";
+        } else if (options.type === BODY_TYPE.Form) {
+            options.headers["Content-Type"] = "multipart/form-data";
         }
     }
 

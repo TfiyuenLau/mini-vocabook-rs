@@ -62,7 +62,7 @@ const getDateCheckInStatistic = async (userId: number, limit: number): Promise<A
 // 更新学习记录熟练度
 const insertOrUpdateRecord = async (data: UploadRecord): Promise<ApiResult<LearningRecord>> => {
     const body = JSON.stringify(data);
-    let options = {method: "post", body: body, type: "Form"};
+    let options = {method: "post", body: body, type: "Json"};
     let res = await http(`${LearningRecordApiUrl.insertOrUpdateRecord}`, options).catch(_ => {
         toast.error("学习记录更新失败");
     });

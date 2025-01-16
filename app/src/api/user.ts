@@ -39,7 +39,7 @@ const getUserById = async (userId: number): Promise<ApiResult<User>> => {
 // 用户注册
 const registerUser = async (userRegister: UserRegister): Promise<ApiResult<User>> => {
     const body = JSON.stringify(userRegister);
-    let options = {method: "post", body: body, type: "Form"};
+    let options = {method: "post", body: body, type: "Json"};
     let res = await http(`${UserApiUrl.registerUser}`, options).catch(_ => {
         toast.error(`数据提交失败`);
     });
@@ -57,7 +57,7 @@ const updateUserPassword = async (email: string, password: string, modifyPw: str
 // 更新用户信息
 const updateUser = async (user: UserRegister): Promise<ApiResult<User>> => {
     const body = JSON.stringify(user)
-    let options = {method: "post", body: body, type: "Form"};
+    let options = {method: "post", body: body, type: "Json"};
     let res = await http(`${UserApiUrl.updateUser}`, options).catch(_ => {
         toast.error(`数据提交失败`);
     });
